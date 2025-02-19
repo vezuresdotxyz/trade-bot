@@ -13,7 +13,7 @@ const bybit = new ccxt.bybit({
 
 // Set the market you want to trade (e.g., BTC/USDT)
 const symbol = "ZERO/USDT";
-let buy = false;
+let buy = true;
 
 export const volumeBot = async () => {
   try {
