@@ -1,0 +1,22 @@
+{
+  "name": "volume-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "ccxt": "^4.4.60",
+    "dotenv": "^16.4.7",
+    "nconf": "^0.12.1",
+    "node-cron": "^3.0.3",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/nconf": "^0.10.7",
+    "@types/node-cron": "^3.0.11"
+  }
+}
