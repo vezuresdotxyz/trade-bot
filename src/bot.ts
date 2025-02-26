@@ -3,6 +3,7 @@ import nconf from "nconf";
 
 const apiKey = nconf.get("API_KEY");
 const apiSecret = nconf.get("API_SECRET");
+import { sendSlackNotification } from "./library/slack";
 
 // Initialize the Bybit client
 const bybit = new ccxt.bybit({
@@ -32,13 +33,20 @@ export const volumeBot = async () => {
     if (buy) {
       console.log("Buy Order Executed");
       await bybit.createMarketBuyOrder(symbol, amount);
+      // sendSlackNotification(
+      //   "Buy Order Executed " + amount + " " + symbol + " at " + currentPrice
+      // );
       buy = false;
     } else {
       console.log("Sell Order Executed");
       await bybit.createMarketSellOrder(symbol, amount);
+      // sendSlackNotification(
+      //   "Sell Order Executed " + amount + " " + symbol + " at " + currentPrice
+      // );
       buy = true;
     }
   } catch (error) {
     console.error("Error:", error);
+    sendSlackNotification(`Error: ${error}`);
   }
 };
