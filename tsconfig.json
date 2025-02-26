@@ -19,7 +19,8 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "types": ["node"]
   },
   "include": ["src/**/*"],
   "exclude": [".templates", "node_modules"]
