@@ -6,3 +6,5 @@ cron.schedule("* * * * *", async () => {
   console.log(`Running volume bot at every minute ${new Date().toISOString()}`);
   await volumeBot();
 });
+
+volumeBot();

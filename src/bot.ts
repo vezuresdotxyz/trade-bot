@@ -28,21 +28,35 @@ export const volumeBot = async () => {
 
     // Get account balance
     const balance = await bybit.fetchBalance();
-    console.log(balance.ZERO);
+    console.log(balance);
 
     if (buy) {
       console.log("Buy Order Executed");
+
+      //before making a buy order, check if the usdt balance is enough to buy the amount
+      //check if usdt balance is greater than 20 $ before making a buy order
+      if (Number(balance.USDT.total) < 30) {
+        console.log("Insufficient balance");
+        sendSlackNotification(
+          `Insufficient balance to buy ZERO: ${balance.USDT.total}`
+        );
+        // await bybit.createMarketSellOrder(symbol, amount);
+        // buy = true;
+        // return;
+      }
       await bybit.createMarketBuyOrder(symbol, amount);
-      // sendSlackNotification(
-      //   "Buy Order Executed " + amount + " " + symbol + " at " + currentPrice
-      // );
       buy = false;
     } else {
       console.log("Sell Order Executed");
+      // zero should be  greter than 300000 Zero
+      if (Number(balance.ZERO.total) < 300000) {
+        console.log("Insufficient balance");
+        sendSlackNotification(
+          `Insufficient balance to sell ZERO: ${balance.ZERO.total}`
+        );
+        return;
+      }
       await bybit.createMarketSellOrder(symbol, amount);
-      // sendSlackNotification(
-      //   "Sell Order Executed " + amount + " " + symbol + " at " + currentPrice
-      // );
       buy = true;
     }
   } catch (error) {
