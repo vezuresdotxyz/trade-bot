@@ -1,6 +1,10 @@
 import ccxt from "ccxt";
 import nconf from "nconf";
-import { USDT_AMOUNT, ZERO_QUANTITY } from "./constants";
+import {
+  USDT_AMOUNT,
+  USDT_AMOUNT_LIMIT,
+  ZERO_QUANTITY_LIMIT,
+} from "./constants";
 const apiKey = nconf.get("API_KEY");
 const apiSecret = nconf.get("API_SECRET");
 import { sendSlackNotification } from "./library/slack";
@@ -34,7 +38,7 @@ export const volumeBot = async () => {
 
       //before making a buy order, check if the usdt balance is enough to buy the amount
       //check if usdt balance is greater than 20 $ before making a buy order
-      if (Number(balance.USDT.total) < 30) {
+      if (Number(balance.USDT.total) < USDT_AMOUNT_LIMIT) {
         console.log("Insufficient balance");
         sendSlackNotification(
           `Insufficient balance to buy ZERO: ${balance.USDT.total}`
@@ -48,7 +52,7 @@ export const volumeBot = async () => {
     } else {
       console.log("Sell Order Executed");
       // zero should be  greter than 300000 Zero
-      if (Number(balance.ZERO.total) < ZERO_QUANTITY) {
+      if (Number(balance.ZERO.total) < ZERO_QUANTITY_LIMIT) {
         console.log("Insufficient balance");
         sendSlackNotification(
           `Insufficient balance to sell ZERO: ${balance.ZERO.total}`
@@ -61,5 +65,6 @@ export const volumeBot = async () => {
   } catch (error) {
     console.error("Error:", error);
     sendSlackNotification(`Error: ${error}`);
+    buy = buy ? false : true;
   }
 };
