@@ -1,6 +1,6 @@
 import ccxt from "ccxt";
 import nconf from "nconf";
-
+import { USDT_AMOUNT, ZERO_QUANTITY } from "./constants";
 const apiKey = nconf.get("API_KEY");
 const apiSecret = nconf.get("API_SECRET");
 import { sendSlackNotification } from "./library/slack";
@@ -23,8 +23,7 @@ export const volumeBot = async () => {
     console.log(`Current Market Price of ZERO: $${currentPrice}`);
 
     // Define how much ZERO to buy (e.g., $10 worth of ZERO)
-    const usdtAmount = 10; // Amount in USDT
-    const amount = usdtAmount / currentPrice; // Convert USDT to ZERO amount
+    const amount = USDT_AMOUNT / currentPrice; // Convert USDT to ZERO amount
 
     // Get account balance
     const balance = await bybit.fetchBalance();
@@ -40,16 +39,16 @@ export const volumeBot = async () => {
         sendSlackNotification(
           `Insufficient balance to buy ZERO: ${balance.USDT.total}`
         );
-        // await bybit.createMarketSellOrder(symbol, amount);
-        // buy = true;
-        // return;
+        await bybit.createMarketSellOrder(symbol, amount);
+        buy = true;
+        return;
       }
       await bybit.createMarketBuyOrder(symbol, amount);
       buy = false;
     } else {
       console.log("Sell Order Executed");
       // zero should be  greter than 300000 Zero
-      if (Number(balance.ZERO.total) < 300000) {
+      if (Number(balance.ZERO.total) < ZERO_QUANTITY) {
         console.log("Insufficient balance");
         sendSlackNotification(
           `Insufficient balance to sell ZERO: ${balance.ZERO.total}`
