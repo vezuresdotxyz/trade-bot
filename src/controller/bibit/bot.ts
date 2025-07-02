@@ -1,13 +1,14 @@
 import ccxt from "ccxt";
 import nconf from "nconf";
+
 import {
   USDT_AMOUNT,
   USDT_AMOUNT_LIMIT,
   ZERO_QUANTITY_LIMIT,
-} from "./constants";
-const apiKey = nconf.get("API_KEY");
-const apiSecret = nconf.get("API_SECRET");
-import { sendSlackNotification } from "./library/slack";
+} from "../constants";
+const apiKey = nconf.get("BYBIT_API_KEY");
+const apiSecret = nconf.get("BYBIT_API_SECRET");
+import { sendSlackNotification } from "../../library/slack";
 
 // Initialize the Bybit client
 const bybit = new ccxt.bybit({
@@ -41,6 +42,7 @@ export const volumeBot = async () => {
       if (Number(balance.USDT.total) < USDT_AMOUNT_LIMIT) {
         console.log("Insufficient balance");
         sendSlackNotification(
+          nconf.get("SLACK_WEBHOOK_URL_BIBIT"),
           `Insufficient balance to buy ZERO: ${balance.USDT.total}`
         );
         await bybit.createMarketSellOrder(symbol, amount);
@@ -55,6 +57,7 @@ export const volumeBot = async () => {
       if (Number(balance.ZERO.total) < ZERO_QUANTITY_LIMIT) {
         console.log("Insufficient balance");
         sendSlackNotification(
+          nconf.get("SLACK_WEBHOOK_URL_BIBIT"),
           `Insufficient balance to sell ZERO: ${balance.ZERO.total}`
         );
         return;
@@ -64,7 +67,10 @@ export const volumeBot = async () => {
     }
   } catch (error) {
     console.error("Error:", error);
-    sendSlackNotification(`Error: ${error}`);
+    sendSlackNotification(
+      nconf.get("SLACK_WEBHOOK_URL_BIBIT"),
+      `Error: ${error}`
+    );
     buy = buy ? false : true;
   }
 };

@@ -1,5 +1,6 @@
 import cron from "node-cron";
-import { volumeBot } from "./bot";
+import { volumeBot } from "./controller/bibit/bot";
+import { runBot } from "./controller/kucoin/bot";
 console.log("volume bot started");
 
 cron.schedule("* * * * *", async () => {
@@ -7,4 +8,4 @@ cron.schedule("* * * * *", async () => {
   await volumeBot();
 });
 
-volumeBot();
+runBot();
