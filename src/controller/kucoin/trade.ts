@@ -14,7 +14,7 @@ export async function tradeZEROUSDTKucoin(
     const freeBalances = balances.free as unknown as Record<string, number>;
 
     const ticker = await kucoin.fetchTicker(symbol);
-    let tradePrice = side === "buy" ? ticker.ask : ticker.bid;
+    let tradePrice =  ticker.ask;
     if (!tradePrice) {
       console.log(":x: Could not fetch price for", symbol);
       return { success: false, usdVolume: 0, price: 0 };
@@ -39,8 +39,8 @@ export async function tradeZEROUSDTKucoin(
     if (orderType === "limit" && !finalPrice) {
       const orderbook = await kucoin.fetchOrderBook(symbol);
       if (side === "sell") {
-        const bestAsk = orderbook.asks[0]?.[0];
-        finalPrice = bestAsk ? bestAsk + 0.0001 : tradePrice;
+        // const bestAsk = orderbook.asks[0]?.[0];
+        finalPrice = tradePrice;
       } else {
         const bestAsk = orderbook.asks[0]?.[0];
         const bestBid = orderbook.bids[0]?.[0];

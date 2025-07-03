@@ -8,4 +8,4 @@ cron.schedule("* * * * *", async () => {
   await volumeBot();
 });
 
-// runBot();
+runBot();
