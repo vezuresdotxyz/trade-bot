@@ -39,8 +39,8 @@ export async function tradeZEROUSDTKucoin(
     if (orderType === "limit" && !finalPrice) {
       const orderbook = await kucoin.fetchOrderBook(symbol);
       if (side === "sell") {
-        const bestAsk = orderbook.asks[0]?.[0];
-        finalPrice = bestAsk ? bestAsk + 0.0001 : tradePrice;
+        // const bestAsk = orderbook.asks[0]?.[0];
+        finalPrice = tradePrice;
       } else {
         const bestAsk = orderbook.asks[0]?.[0];
         const bestBid = orderbook.bids[0]?.[0];
