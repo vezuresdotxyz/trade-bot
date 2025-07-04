@@ -52,16 +52,15 @@ async function fulfillOpenOrders(dailyVolume: number = 0) {
         totalFulfilledVolume += usdVolume;
 
         const message = `
-:white_tick: *Trade Successful*
-*Pending Sell Order Fulfillment*
-
-📈 *Side:* BUY
-💰 *Amount:* ${amount} ZERO
-💵 *Price:* $${price}
-📊 *Buy Order ID:* ${buyOrder.id}
-🎯 *Fulfilling Sell Order:* ${order.id}
-💸 *Trade Value:* $${usdVolume}
-📈 *Total USD Volume Today:* $${dailyVolume + totalFulfilledVolume} \n`;
+*✅ Trade Successful*\n•
+*Pending Sell Order Fulfillment*\n•
+*Side:* BUY\n•
+*Amount:* ${amount} ZERO\n•
+*Price:* $${price}\n•
+*Buy Order ID:* ${buyOrder.id}\n•
+*Fulfilling Sell Order:* ${order.id}\n•
+*Trade Value:* $${usdVolume}\n•
+*Total USD Volume Today:* $${dailyVolume + totalFulfilledVolume} \n`;
 
         await sendSlackNotification(
           nconf.get("SLACK_WEBHOOK_URL_KUCOIN"),

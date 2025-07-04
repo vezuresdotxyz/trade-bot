@@ -122,7 +122,7 @@ export async function runBot() {
         nconf.get("SLACK_WEBHOOK_URL_KUCOIN"),
         `*✅ Trade Successful*\n• *Side:* ${side.toUpperCase()}\n• *Amount:* ${amount} ZERO\n• *Price:* $${
           price ?? "?"
-        }\n• *Total USD Volume Today:* $${dailyVolume}\n⏳ Waiting *${
+        }\n• *Trade Value:* $${usdVolume}\n• *Total USD Volume Today:* $${dailyVolume}\n⏳ Waiting *${
           sleepMs / 1000
         } seconds* before next trade...`
       );
