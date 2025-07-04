@@ -3,12 +3,15 @@ import nconf from "nconf";
 
 import { tradeZEROUSDTKucoin } from "./trade";
 import { sendSlackNotification } from "../../library/slack";
+import { generateHourlyReport } from "./hourly-reporter";
+import { fulfillOpenOrders } from "./order-fulfiller";
 
 const DAILY_VOLUME = nconf.get("DAILY_VOLUME");
 const MIN_TRADE_AMOUNT = nconf.get("MIN_TRADE_AMOUNT");
 const MAX_TRADE_AMOUNT = nconf.get("MAX_TRADE_AMOUNT");
 const MIN_SLEEP_MS = nconf.get("MIN_SLEEP_MS");
 const MAX_SLEEP_MS = nconf.get("MAX_SLEEP_MS");
+
 
 function randomInRange(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -46,14 +49,31 @@ export async function runBot() {
   let side: "buy" | "sell" = "buy";
   let dailyVolume = 0;
   let lastReset = Date.now();
+  let lastHourlyReport = Date.now();
+  let lastOrderFulfillment = Date.now();
 
   while (true) {
-    if (Date.now() - lastReset > 24 * 60 * 60 * 1000) {
+    const currentTime = Date.now();
+
+    if (currentTime - lastHourlyReport > 60 * 60 * 1000) {
+      console.log("⏰ Running hourly report...");
+      await generateHourlyReport();
+      lastHourlyReport = currentTime;
+    }
+    
+
+    if (currentTime - lastOrderFulfillment > 60 * 60 * 1000) {
+      console.log("🎯 Running order fulfillment...");
+      dailyVolume = await fulfillOpenOrders(dailyVolume);
+      lastOrderFulfillment = currentTime;
+    }
+
+    if (currentTime - lastReset > 24 * 60 * 60 * 1000) {
       dailyVolume = 0;
-      lastReset = Date.now();
+      lastReset = currentTime;
       await sendSlackNotification(
-        nconf.get("SLACK_WEBHOOK_URL"),
-        "Daily trade volume reset."
+        nconf.get("SLACK_WEBHOOK_URL_KUCOIN"),
+        "🔄 Daily trade volume reset."
       );
     }
 
@@ -70,7 +90,7 @@ export async function runBot() {
 
       // Reset daily volume after sleeping until 12 AM
       dailyVolume = 0;
-      lastReset = Date.now();
+      lastReset = currentTime;
       await sendSlackNotification(
         nconf.get("SLACK_WEBHOOK_URL_KUCOIN"),
         "Bot resumed trading after 12 AM. Daily volume reset."

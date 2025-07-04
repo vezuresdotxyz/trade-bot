@@ -1,6 +1,3 @@
-import ccxt from "ccxt";
-import { sendSlackNotification } from "../../library/slack";
-
 export async function tradeZEROUSDTKucoin(
   side: "buy" | "sell",
   amount: number,
